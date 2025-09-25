@@ -1,0 +1,239 @@
+import re
+import json
+import pdfplumber
+import os
+import logging
+
+# Configure logging to file
+logging.basicConfig(
+    filename='cutoff_parser.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+
+def extract_text_from_pdf(pdf_path):
+    text = ""
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text(x_tolerance=3, y_tolerance=3) or ""
+                text += page_text + "\n"
+        logging.info(f"Text successfully extracted from '{pdf_path}'")
+        return text
+    except Exception as e:
+        logging.error(f"Error extracting text from PDF: {e}")
+        raise
+
+
+def clean_line(line):
+    return re.sub(r'\s+', ' ', line).strip()
+
+
+def split_institute_blocks(text):
+    # Allow institutes starting with code anywhere in first few spaces
+    pattern = re.compile(r'(?=^\s*[\u200B]?\d{4,}\s)', re.MULTILINE)
+    blocks = pattern.split(text)
+
+    valid_blocks = []
+    for block in blocks:
+        b = block.strip()
+        if b and re.search(r'\b\d{4,}\b', b):
+            valid_blocks.append(b)
+
+    with open("blocks_debug.txt", "w", encoding="utf-8") as f:
+        for i, blk in enumerate(valid_blocks):
+            f.write(f"--- BLOCK {i+1} ---\n{blk}\n\n")
+
+    logging.info(f"Split text into {len(valid_blocks)} institute blocks")
+    return valid_blocks
+
+
+def extract_institute_info(lines):
+    code = None
+    name_lines = []
+
+    for i in range(min(20, len(lines))):  # Check more lines than before
+        line = clean_line(lines[i])
+        m = re.match(r'(\d{4,})\s+(.*)', line)
+        if m:
+            code = int(m.group(1))
+            name_lines.append(m.group(2))
+            j = i + 1
+            while j < len(lines):
+                next_line = clean_line(lines[j])
+                if re.search(r'choice code|course name|seat type|category|gopen|gst|stage', next_line, re.IGNORECASE):
+                    break
+                if next_line:
+                    name_lines.append(next_line)
+                j += 1
+            break
+
+    name = " ".join(name_lines).strip() if name_lines else "Unknown Institute Name"
+
+    if code is None:
+        for line in lines:
+            m = re.search(r'\b(\d{4,})\b', clean_line(line))
+            if m:
+                code = int(m.group(1))
+                break
+
+    return code, name
+
+
+def extract_branch(lines):
+    for i, line in enumerate(lines):
+        line_clean = clean_line(line)
+        m = re.match(r'(?i)^course\s*name\s*:?\s*(.*)', line_clean)
+        if m:
+            branch = m.group(1).strip()
+            if branch:
+                return branch
+            if i + 1 < len(lines):
+                return clean_line(lines[i + 1])
+    # fallback: assume second line is branch if short enough
+    if len(lines) >= 2 and len(lines[1]) < 60:
+        return lines[1]
+    return "Unknown Branch"
+
+
+def extract_seat_types(lines):
+    seat_type_keywords = [
+        "OPEN", "SC", "ST", "OBC", "EWS", "NT", "VJ", "NT1", "NT2", "NT3",
+        "TFWS", "GOPEN", "GST", "GOBC", "LOPEN", "LSC", "LOBC", "LSEBC"
+    ]
+    pattern = r'\b(?:' + '|'.join(seat_type_keywords) + r')\b'
+    for idx, line in enumerate(lines):
+        line_clean = clean_line(line)
+        found = re.findall(pattern, line_clean, re.IGNORECASE)
+        if found:  # removed strict length check
+            seat_types = [st.upper() for st in found]
+            return seat_types, idx
+    return None, None
+
+
+def extract_ranks_and_percentiles(lines, start_idx):
+    ranks = []
+    percentiles = []
+    relevant_lines = [line for line in lines[start_idx + 1:start_idx + 15] if 'stage' not in line.lower()]
+    combined = " ".join(relevant_lines)
+
+    # Try to extract pairs like "123 (45.67%)"
+    pairs = re.findall(r'(\d+)\s*\(\s*([\d.]+)%\s*\)', combined)
+    if pairs:
+        ranks = [int(p[0]) for p in pairs]
+        percentiles = [float(p[1]) for p in pairs]
+        return ranks, percentiles
+
+    # Separate extraction
+    rank_matches = re.findall(r'\b\d{3,}\b', combined)
+    pct_matches = re.findall(r'([\d.]+)%', combined)
+    if rank_matches:
+        ranks = list(map(int, rank_matches))
+    if pct_matches:
+        percentiles = list(map(float, pct_matches))
+
+    return ranks, percentiles
+
+
+def parse_block(block):
+    lines = [clean_line(line) for line in block.splitlines() if clean_line(line)]
+    if not lines:
+        return []
+
+    inst_code, inst_name = extract_institute_info(lines)
+    if inst_code is None:
+        logging.warning("Institute code missing in block")
+        return []
+
+    branch = extract_branch(lines)
+    seat_types, seat_idx = extract_seat_types(lines)
+    if not seat_types or seat_idx is None:
+        logging.warning(f"No seat types found for institute {inst_code}")
+        return []
+
+    ranks, percentiles = extract_ranks_and_percentiles(lines, seat_idx)
+    if not ranks or not percentiles:
+        logging.warning(f"No ranks/percentiles found for institute {inst_code}")
+        return []
+
+    results = []
+    min_len = min(len(seat_types), len(ranks), len(percentiles))
+    for i in range(min_len):
+        results.append({
+            "Institute Code": inst_code,
+            "Institute": f"{inst_code} {inst_name}",
+            "Branch": branch,
+            "Seat Type": seat_types[i],
+            "Rank": ranks[i],
+            "Percentile": percentiles[i],
+        })
+
+    return results
+
+
+def parse_cutoff_data_from_pdf(pdf_path):
+    print(f"Starting PDF parsing: {os.path.basename(pdf_path)}")
+    logging.info(f"Processing PDF: {pdf_path}")
+
+    raw_text = extract_text_from_pdf(pdf_path)
+    with open("raw_text_debug.txt", "w", encoding="utf-8") as f:
+        f.write(raw_text)
+
+    blocks = split_institute_blocks(raw_text)
+    print(f"Identified {len(blocks)} institute blocks")
+
+    all_records = []
+    processed_blocks = 0
+    skipped_blocks = 0
+
+    for idx, block in enumerate(blocks, 1):
+        try:
+            entries = parse_block(block)
+            if entries:
+                all_records.extend(entries)
+                processed_blocks += 1
+            else:
+                skipped_blocks += 1
+                with open(f"failed_block_{idx}.txt", "w", encoding="utf-8") as f:
+                    f.write(block)
+        except Exception as e:
+            logging.error(f"Error parsing block {idx}: {e}")
+            skipped_blocks += 1
+            with open(f"error_block_{idx}.txt", "w", encoding="utf-8") as f:
+                f.write(block)
+
+        if idx % 100 == 0 or idx == len(blocks):
+            print(f"Processed {idx}/{len(blocks)} blocks, "
+                  f"records so far: {len(all_records)}")
+
+    print("\nParsing complete")
+    print(f"✅ Successfully processed blocks: {processed_blocks}")
+    print(f"⚠ Skipped blocks: {skipped_blocks}")
+    print(f"📊 Total records extracted: {len(all_records)}")
+    logging.info(f"Extracted {len(all_records)} records from "
+                 f"{processed_blocks} blocks; skipped {skipped_blocks}")
+
+    return {"MHT-CET College Data": all_records}
+
+
+if __name__ == "__main__":
+    PDF_FILE = "DSE_CAP1_CutOff_2025_26.pdf"  # Change to your PDF path
+    OUTPUT_JSON = "cutoffs.json"
+
+    if not os.path.isfile(PDF_FILE):
+        print(f"ERROR: PDF file not found: {PDF_FILE}")
+        logging.error(f"PDF file not found: {PDF_FILE}")
+        exit(1)
+
+    try:
+        cutoff_data = parse_cutoff_data_from_pdf(PDF_FILE)
+        with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+            json.dump(cutoff_data, f, indent=2, ensure_ascii=False)
+
+        print(f"\n💾 JSON saved to {OUTPUT_JSON}")
+        print(f"📊 Total records extracted: {len(cutoff_data['MHT-CET College Data'])}")
+
+    except Exception as e:
+        print(f"❌ Fatal error during parsing: {e}")
+        logging.exception("Fatal error during parsing")

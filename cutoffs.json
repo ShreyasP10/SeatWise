@@ -1,0 +1,484 @@
+{
+  "MHT-CET College Data": [
+    {
+      "Institute Code": 1002,
+      "Institute": "1002 Government College of Engineering, Amravati (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 373,
+      "Percentile": 94.0
+    },
+    {
+      "Institute Code": 2008,
+      "Institute": "2008 Government College of Engineering, Chhatrapati Sambhajinagar (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 255,
+      "Percentile": 94.65
+    },
+    {
+      "Institute Code": 2008,
+      "Institute": "2008 Government College of Engineering, Chhatrapati Sambhajinagar (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2609,
+      "Percentile": 93.38
+    },
+    {
+      "Institute Code": 2008,
+      "Institute": "2008 Government College of Engineering, Chhatrapati Sambhajinagar (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2775,
+      "Percentile": 94.24
+    },
+    {
+      "Institute Code": 2020,
+      "Institute": "2020 Shri Guru Gobind Singhji Institute of Engineering and Technology, Nanded (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 5745,
+      "Percentile": 93.72
+    },
+    {
+      "Institute Code": 2020,
+      "Institute": "2020 Shri Guru Gobind Singhji Institute of Engineering and Technology, Nanded (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 14041,
+      "Percentile": 93.89
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Choice Code : 301219110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 1167,
+      "Percentile": 95.68
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Choice Code : 301224510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 79,
+      "Percentile": 99.3
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 156,
+      "Percentile": 98.06
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1763,
+      "Percentile": 99.42
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 276,
+      "Percentile": 97.68
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1903,
+      "Percentile": 96.0
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 279,
+      "Percentile": 95.5
+    },
+    {
+      "Institute Code": 3012,
+      "Institute": "3012 Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 13633,
+      "Percentile": 94.33
+    },
+    {
+      "Institute Code": 3014,
+      "Institute": "3014 Sardar Patel College of Engineering, Andheri (Government-Aided Autonomous)",
+      "Branch": "Choice Code : 301419110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 3527,
+      "Percentile": 94.63
+    },
+    {
+      "Institute Code": 3014,
+      "Institute": "3014 Sardar Patel College of Engineering, Andheri (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 3378,
+      "Percentile": 95.0
+    },
+    {
+      "Institute Code": 3014,
+      "Institute": "3014 Sardar Patel College of Engineering, Andheri (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 4691,
+      "Percentile": 94.27
+    },
+    {
+      "Institute Code": 3182,
+      "Institute": "3182 Thadomal Shahani Engineering College, Bandra, Mumbai (Un-Aided Linguistic Minority - Sindhi)",
+      "Branch": "Choice Code : 318224510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 1738,
+      "Percentile": 94.29
+    },
+    {
+      "Institute Code": 3182,
+      "Institute": "3182 Thadomal Shahani Engineering College, Bandra, Mumbai (Un-Aided Linguistic Minority - Sindhi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2132,
+      "Percentile": 93.71
+    },
+    {
+      "Institute Code": 3182,
+      "Institute": "3182 Thadomal Shahani Engineering College, Bandra, Mumbai (Un-Aided Linguistic Minority - Sindhi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 3024,
+      "Percentile": 93.43
+    },
+    {
+      "Institute Code": 3185,
+      "Institute": "3185 Vivekanand Education Society's Institute of Technology, Chembur, Mumbai (Un-Aided Autonomous Linguistic Minority - Sindhi)",
+      "Branch": "Choice Code : 318524510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 4761,
+      "Percentile": 93.54
+    },
+    {
+      "Institute Code": 3185,
+      "Institute": "3185 Vivekanand Education Society's Institute of Technology, Chembur, Mumbai (Un-Aided Autonomous Linguistic Minority - Sindhi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 10968,
+      "Percentile": 94.06
+    },
+    {
+      "Institute Code": 3197,
+      "Institute": "3197 Agnel Charities FR. C. Rodrigues Institute of Technology, Vashi, Navi Mumbai (Un-Aided Autonomous Religious Minority - Christian)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2409,
+      "Percentile": 94.2
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Choice Code : 319924510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 266,
+      "Percentile": 95.33
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 881,
+      "Percentile": 94.81
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1502,
+      "Percentile": 94.29
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1356,
+      "Percentile": 94.25
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 3107,
+      "Percentile": 94.06
+    },
+    {
+      "Institute Code": 3199,
+      "Institute": "3199 Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai (Un-Aided Autonomous Linguistic Minority - Gujarathi)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1606,
+      "Percentile": 93.92
+    },
+    {
+      "Institute Code": 3215,
+      "Institute": "3215 Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology , Andheri, Mumbai (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2599,
+      "Percentile": 94.62
+    },
+    {
+      "Institute Code": 6004,
+      "Institute": "6004 Government College of Engineering & Research, Avasari Khurd (Government)",
+      "Branch": "Choice Code : 600424510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 3580,
+      "Percentile": 93.54
+    },
+    {
+      "Institute Code": 6005,
+      "Institute": "6005 Government College of Engineering, Karad (Government Autonomous)",
+      "Branch": "Choice Code : 600519110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 2759,
+      "Percentile": 94.2
+    },
+    {
+      "Institute Code": 6005,
+      "Institute": "6005 Government College of Engineering, Karad (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1218,
+      "Percentile": 93.54
+    },
+    {
+      "Institute Code": 6005,
+      "Institute": "6005 Government College of Engineering, Karad (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2717,
+      "Percentile": 94.39
+    },
+    {
+      "Institute Code": 6005,
+      "Institute": "6005 Government College of Engineering, Karad (Government Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2470,
+      "Percentile": 93.47
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Choice Code : 600719110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 882,
+      "Percentile": 94.42
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1658,
+      "Percentile": 93.85
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 92,
+      "Percentile": 95.66
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 450,
+      "Percentile": 95.26
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 595,
+      "Percentile": 95.2
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 520,
+      "Percentile": 94.89
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1481,
+      "Percentile": 94.82
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 2294,
+      "Percentile": 93.63
+    },
+    {
+      "Institute Code": 6007,
+      "Institute": "6007 Walchand College of Engineering, Sangli (Government-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 593,
+      "Percentile": 95.88
+    },
+    {
+      "Institute Code": 6175,
+      "Institute": "6175 Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1292,
+      "Percentile": 94.29
+    },
+    {
+      "Institute Code": 6175,
+      "Institute": "6175 Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 3419,
+      "Percentile": 93.29
+    },
+    {
+      "Institute Code": 6175,
+      "Institute": "6175 Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1613,
+      "Percentile": 94.78
+    },
+    {
+      "Institute Code": 6271,
+      "Institute": "6271 Pune Institute of Computer Technology (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 284,
+      "Percentile": 95.83
+    },
+    {
+      "Institute Code": 6271,
+      "Institute": "6271 Pune Institute of Computer Technology (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 979,
+      "Percentile": 95.4
+    },
+    {
+      "Institute Code": 6272,
+      "Institute": "6272 Dr. D. Y. Patil Pratishthans D.Y.Patil College of Engineering Akurdi, Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1884,
+      "Percentile": 93.38
+    },
+    {
+      "Institute Code": 6273,
+      "Institute": "6273 Bansilal Ramnath Agarawal Charitable Trusts Vishwakarma Institute of Technology, Bibwewadi, Pune (Un-Aided Autonomous)",
+      "Branch": "Choice Code : 627319110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 6969,
+      "Percentile": 93.58
+    },
+    {
+      "Institute Code": 6273,
+      "Institute": "6273 Bansilal Ramnath Agarawal Charitable Trusts Vishwakarma Institute of Technology, Bibwewadi, Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1858,
+      "Percentile": 93.59
+    },
+    {
+      "Institute Code": 6274,
+      "Institute": "6274 Pune Vidyarthi Griha's College of Engineering and Technology and G K Pate(Wani) Institute of Management, Pune (Un-Aided)",
+      "Branch": "Choice Code : 627424510 Course Name : Computer Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 1932,
+      "Percentile": 94.0
+    },
+    {
+      "Institute Code": 6276,
+      "Institute": "6276 MKSSS's Cummins College of Engineering for Women, Karvenagar,Pune (Un-Aided Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "LOPEN",
+      "Rank": 1908,
+      "Percentile": 93.87
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Choice Code : 1600619110 Course Name : Civil Engineering",
+      "Seat Type": "GOPEN",
+      "Rank": 286,
+      "Percentile": 96.05
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 74,
+      "Percentile": 97.65
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 127,
+      "Percentile": 95.58
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1236,
+      "Percentile": 97.37
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 1207,
+      "Percentile": 97.8
+    },
+    {
+      "Institute Code": 16006,
+      "Institute": "16006 COEP Technological University (University Autonomous)",
+      "Branch": "Unknown Branch",
+      "Seat Type": "GOPEN",
+      "Rank": 3584,
+      "Percentile": 93.74
+    }
+  ]
+}
