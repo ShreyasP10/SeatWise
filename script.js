@@ -416,7 +416,7 @@ async function initApp() {
   initDropdowns();
   showLoading(true);
   try {
-    const res = await fetch("DSE-Engineering-College-List.json");
+    const res = await fetch("Engineering-College-List.json");
     const json = await res.json();
     excelData = json["MHT-CET College Data"];
     populateDropdowns(excelData);
