@@ -35,3 +35,49 @@ It provides accurate, fast, and user-friendly filtering using previous year cuto
 ---
 
 ## 📂 Project Structure
+📁 SeatWise
+│── index.html # Main UI
+│── style.css # Styling
+│── script.js # Application logic
+│── Engineering-College-List.json # College & cutoff data
+│── README.md
+│── LICENSE
+
+---
+
+## ⚙️ How It Works
+
+1. User enters:
+   - Percentile or Rank  
+   - Preferences (branch, seat type, etc.)
+
+2. System:
+   - Matches input with cutoff dataset  
+   - Filters eligible colleges  
+
+3. Output:
+   - Displays list of colleges  
+   - Allows PDF download  
+
+---
+
+## 📊 Data Source
+
+- MHT-CET DSE CAP Round cutoff data  
+- Converted from PDF to structured JSON format  
+
+> ⚠️ Note: Results are based on previous year data and are for reference only.
+
+---
+
+## 🖥️ How to Run Locally
+
+```bash
+# Clone repository
+git clone https://github.com/your-username/SeatWise.git
+
+# Open folder
+cd SeatWise
+
+# Run
+Open index.html in your browser
