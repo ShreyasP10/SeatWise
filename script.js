@@ -1,3 +1,7 @@
+// ============================================================
+// MHT-CET College Predictor - Main Script
+// ============================================================
+
 // Global variables
 let excelData = [];
 let filteredData = [];
@@ -6,22 +10,23 @@ const resultsPerPage = 20;
 let currentPage = 1;
 let totalPages = 1;
 let seatChoices, branchChoices, collegeChoices, regionChoices;
+let allBranchesList = [];
 
-// Determine college type
+// Helper: Determine college type from institute name
 function getCollegeTypeFromInstitute(name) {
   if (!name) return "Other";
   const lower = name.toLowerCase();
   if (lower.includes("government") && lower.includes("autonomous"))
     return "Government‑Autonomous";
   if (lower.includes("government")) return "Government";
-  if (lower.startsWith("-aided") || /\bunaided\b/.test(lower)) return "Unaided";
-  if (/\baided\b/.test(lower)) return "Aided";
   if (lower.includes("autonomous")) return "Autonomous";
+  if (lower.includes("aided")) return "Aided";
+  if (lower.includes("unaided")) return "Unaided";
   return "Other";
 }
 
-// Mapping code prefixes to region
-const regionMapping = {
+// Region mapping: region name -> first digit of institute code
+const regionPrefixMap = {
   Amravati: "1",
   Sambhajinagar: "2",
   Mumbai: "3",
@@ -30,25 +35,40 @@ const regionMapping = {
   Pune: "6"
 };
 
-// Unified selection helper
-function getSelectedValues(instance) {
+// Unified selection helper (handles "ALL_BRANCHES" for branch dropdown)
+function getSelectedValues(instance, isBranch = false) {
   const selected = instance.getValue(true);
-  if (selected.includes("ALL_BRANCHES")) {
-    return instance._currentState.choices
-      .map((c) => c.value)
-      .filter((v) => v !== "ALL_BRANCHES");
+  if (!selected || selected.length === 0) return [];
+  if (isBranch && selected.includes("ALL_BRANCHES")) {
+    return [...allBranchesList];
   }
   return selected;
 }
 
-// Toast notification logic
+// Toast notification
 function showNotification(message, type = "error") {
   const notif = document.getElementById("notification");
+  if (!notif) return;
   notif.querySelector("span").textContent = message;
   notif.className = `notification ${type} show`;
   setTimeout(() => {
     notif.className = "notification";
   }, 5000);
+}
+
+// Show/hide loading spinner
+function showLoading(show) {
+  let loader = document.querySelector(".loading");
+  if (show) {
+    if (!loader) {
+      const div = document.createElement("div");
+      div.className = "loading";
+      div.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading colleges...';
+      document.body.appendChild(div);
+    }
+  } else {
+    if (loader) loader.remove();
+  }
 }
 
 // Initialize Choices.js dropdowns
@@ -78,14 +98,14 @@ function initDropdowns() {
   });
 
   regionChoices.setChoices(
-    Object.keys(regionMapping).map((r) => ({ value: r, label: r })),
+    Object.keys(regionPrefixMap).map((r) => ({ value: r, label: r })),
     "value",
     "label",
     true
   );
 }
 
-// Populate dropdowns dynamically from loaded data
+// Populate dropdowns from loaded data
 function populateDropdowns(data) {
   const seatTypes = [...new Set(data.map((d) => d["Seat Type"]).filter(Boolean))];
   seatChoices.setChoices(
@@ -97,8 +117,9 @@ function populateDropdowns(data) {
 
   const branches = [...new Set(data.map((d) => d["Branch"]).filter(Boolean))];
   branches.sort();
+  allBranchesList = [...branches];
   const branchOptions = [
-    { value: "ALL_BRANCHES", label: "All Branches" },
+    { value: "ALL_BRANCHES", label: "✨ All Branches" },
     ...branches.map((b) => ({ value: b, label: b }))
   ];
   branchChoices.setChoices(branchOptions, "value", "label", true);
@@ -114,24 +135,12 @@ function populateDropdowns(data) {
   );
 }
 
-// Show or hide loading spinner
-function showLoading(show) {
-  if (show) {
-    const div = document.createElement("div");
-    div.className = "loading";
-    div.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading colleges...';
-    document.querySelector("main").appendChild(div);
-  } else {
-    document.querySelector(".loading")?.remove();
-  }
-}
-
 // Main filtering logic
 function filterData() {
-  const regions = getSelectedValues(regionChoices);
-  const seatTypes = getSelectedValues(seatChoices);
-  const branches = getSelectedValues(branchChoices);
-  const collegeTypes = getSelectedValues(collegeChoices);
+  const regions = getSelectedValues(regionChoices, false);
+  const seatTypes = getSelectedValues(seatChoices, false);
+  const branches = getSelectedValues(branchChoices, true);
+  const collegeTypes = getSelectedValues(collegeChoices, false);
   const predictType = document.querySelector('input[name="predictType"]:checked').value;
   const inputValue = parseFloat(document.getElementById("inputValue").value);
   const collegeCount = document.getElementById("collegeCount").value;
@@ -165,13 +174,16 @@ function filterData() {
     filtered = filtered.filter((d) => d["Percentile"] && inputValue >= d["Percentile"]);
   }
 
+  // Region filter: match first digit of institute code
   if (regions.length) {
     filtered = filtered.filter((d) => {
       const code = String(d["Institute Code"] || "");
-      return regions.some((r) => code.startsWith(regionMapping[r]));
+      const firstDigit = code.charAt(0);
+      return regions.some((region) => regionPrefixMap[region] === firstDigit);
     });
   }
 
+  // Sort by percentile descending (best match first)
   filtered.sort((a, b) => (b["Percentile"] || 0) - (a["Percentile"] || 0));
 
   if (collegeCount !== "all") {
@@ -181,13 +193,17 @@ function filterData() {
   return filtered;
 }
 
-// Display selected filter criteria
+// Display selected filter criteria in results page
 function displaySearchParams() {
+  const container = document.getElementById("searchParams");
+  if (!container) return;
+  container.innerHTML = "";
+
   const params = [
-    { label: "Region", value: getSelectedValues(regionChoices).join(", ") || "All" },
-    { label: "Seat Type", value: getSelectedValues(seatChoices).join(", ") || "All" },
-    { label: "Branch", value: getSelectedValues(branchChoices).join(", ") || "All" },
-    { label: "College Type", value: getSelectedValues(collegeChoices).join(", ") || "All" }
+    { label: "Region", value: getSelectedValues(regionChoices, false).join(", ") || "All" },
+    { label: "Seat Type", value: getSelectedValues(seatChoices, false).join(", ") || "All" },
+    { label: "Branch", value: getSelectedValues(branchChoices, true).join(", ") || "All" },
+    { label: "College Type", value: getSelectedValues(collegeChoices, false).join(", ") || "All" }
   ];
 
   const predictType = document.querySelector('input[name="predictType"]:checked').value;
@@ -197,17 +213,15 @@ function displaySearchParams() {
     value: document.getElementById("inputValue").value
   });
 
-  const container = document.getElementById("searchParams");
-  container.innerHTML = "";
   params.forEach((p) => {
     const div = document.createElement("div");
     div.className = "param-card";
-    div.innerHTML = `<h3>${p.label}</h3><p>${p.value}</p>`;
+    div.innerHTML = `<h3>${p.label}</h3><span>${p.value}</span>`;
     container.appendChild(div);
   });
 }
 
-// Show paginated results
+// Render paginated results table
 function displayResults(page = 1) {
   currentPage = page;
   const start = (page - 1) * resultsPerPage;
@@ -215,38 +229,50 @@ function displayResults(page = 1) {
   const slice = filteredData.slice(start, end);
 
   const body = document.getElementById("resultsBody");
-  body.innerHTML = slice.length
-    ? ""
-    : `<tr><td colspan="6">No colleges found</td></tr>`;
-  slice.forEach((d) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${d["Institute"] || "N/A"}</td>
-      <td>${d["Branch"] || "N/A"}</td>
-      <td>${getCollegeTypeFromInstitute(d["Institute"])}</td>
-      <td>${d["Seat Type"] || "N/A"}</td>
-      <td>${d["Rank"] ?? "N/A"}</td>
-      <td>${d["Percentile"] ?? "N/A"}</td>`;
-    body.appendChild(tr);
-  });
+  if (!body) return;
+  body.innerHTML = "";
+  if (slice.length === 0) {
+    body.innerHTML = '<tr><td colspan="6">No colleges found</td></tr>';
+  } else {
+    slice.forEach((d) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d["Institute"] || "N/A"}</td>
+        <td>${d["Branch"] || "N/A"}</td>
+        <td>${getCollegeTypeFromInstitute(d["Institute"])}</td>
+        <td>${d["Seat Type"] || "N/A"}</td>
+        <td>${d["Rank"] ?? "N/A"}</td>
+        <td>${d["Percentile"] ?? "N/A"}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
 
   totalPages = Math.ceil(filteredData.length / resultsPerPage);
-  document.getElementById("totalResults").textContent = filteredData.length;
-  document.getElementById("startResult").textContent = filteredData.length ? start + 1 : 0;
-  document.getElementById("endResult").textContent = end;
+  const totalSpan = document.getElementById("totalResultsSpan");
+  if (totalSpan) totalSpan.textContent = filteredData.length;
 
   renderPagination();
+
+  // Update stats summary
+  const govCount = filteredData.filter(
+    (d) => getCollegeTypeFromInstitute(d["Institute"]).includes("Government")
+  ).length;
+  const statsDiv = document.getElementById("statsInfo");
+  if (statsDiv) {
+    statsDiv.innerHTML = `🏛️ Total Colleges: ${filteredData.length} | 🏢 Govt: ${govCount} | 🏫 Others: ${filteredData.length - govCount}`;
+  }
 }
 
-// Build pagination controls
+// Build pagination buttons
 function renderPagination() {
   const container = document.getElementById("pagination");
+  if (!container) return;
   container.innerHTML = "";
-
   if (totalPages <= 1) return;
 
   const prevBtn = document.createElement("button");
-  prevBtn.textContent = "<";
+  prevBtn.textContent = "‹";
   prevBtn.disabled = currentPage === 1;
   prevBtn.onclick = () => displayResults(currentPage - 1);
   container.appendChild(prevBtn);
@@ -262,7 +288,7 @@ function renderPagination() {
   }
 
   const nextBtn = document.createElement("button");
-  nextBtn.textContent = ">";
+  nextBtn.textContent = "›";
   nextBtn.disabled = currentPage === totalPages;
   nextBtn.onclick = () => displayResults(currentPage + 1);
   container.appendChild(nextBtn);
@@ -270,192 +296,201 @@ function renderPagination() {
 
 // Export visible results to PDF
 function downloadPDF() {
+  if (!filteredData.length) {
+    showNotification("No data to export", "info");
+    return;
+  }
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: "landscape" });
 
-  // ---- Title ----
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(33, 37, 41); // Dark gray
-  doc.text(" College Predictor Results", 105, 20, null, null, "center");
-
-  // ---- Subtitle ----
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 100, 100); // Muted
-  doc.text("Based on your percentile/rank and selected filters", 105, 28, null, null, "center");
-
-  // ---- Search Parameters Summary ----
+  doc.text("MHT-CET College Predictor Report", 14, 18);
   doc.setFontSize(10);
-  doc.setTextColor(50, 50, 50);
-  let y = 40;
+  doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
 
-  const params = [
-    { label: "Region", value: getSelectedValues(regionChoices).join(", ") || "All" },
-    { label: "Seat Type", value: getSelectedValues(seatChoices).join(", ") || "All" },
-    { label: "Branch", value: getSelectedValues(branchChoices).join(", ") || "All" },
-    { label: "College Type", value: getSelectedValues(collegeChoices).join(", ") || "All" }
-  ];
-
-  const predictType = document.querySelector('input[name="predictType"]:checked').value;
-  params.push({ label: "Filter By", value: predictType === "percentile" ? "Percentile" : "Rank" });
-  params.push({
-    label: predictType === "percentile" ? "Percentile" : "Rank",
-    value: document.getElementById("inputValue").value
-  });
-
-  // Display filters in two columns
-  let xLeft = 14;
-  let xRight = 105;
-  params.forEach((p, index) => {
-    const x = index % 2 === 0 ? xLeft : xRight;
-    if (index % 2 === 0 && index !== 0) y += 7;
-    doc.text(`${p.label}: ${p.value}`, x, y);
-  });
-  y += 15;
-
-  // ---- Table Setup ----
-  const headers = [["Institute", "Branch", "Seat Type", "Rank", "Percentile"]];
+  const headers = [["Institute", "Branch", "College Type", "Seat Type", "Rank", "Percentile"]];
   const body = filteredData.map((r) => [
     r["Institute"] || "N/A",
     r["Branch"] || "N/A",
+    getCollegeTypeFromInstitute(r["Institute"]),
     r["Seat Type"] || "N/A",
     r["Rank"] ?? "N/A",
     r["Percentile"] ?? "N/A"
   ]);
 
-  
   doc.autoTable({
-    startY: y,
+    startY: 35,
     head: headers,
     body: body,
-    theme: "striped", // more elegant than grid
-    headStyles: {
-      fillColor: [60, 150, 220], // nice blue
-      textColor: 255,
-      fontStyle: "bold"
-    },
-    alternateRowStyles: {
-      fillColor: [250, 250 , 250] // light gray
-    },
-    styles: {
-      font: "helvetica",
-      fontSize: 9,
-      cellPadding: 3,
-      textColor: [25, 25, 25]
-    },
-    margin: { bottom: 30 },
-    didDrawPage: function (data) {
-      doc.setFontSize(9);
-      doc.setTextColor(100, 100, 100);
-      doc.setFont("helvetica", "italic");
-      doc.text(
-        "Developed by Shreyas Pawar  |  https://github.com/ShreyasP10",
-        data.settings.margin.left,
-        doc.internal.pageSize.height - 15
-      );
-
-      doc.setFontSize(8);
-      doc.setTextColor(160);
-      doc.text(
-        "Note: This data is for reference only. Please verify with official sources.",
-        105,
-        doc.internal.pageSize.height - 10,
-        null, null, "center"
-      );
-
-      const pageCount = doc.internal.getNumberOfPages();
-      const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
-      doc.setFontSize(8);
-      doc.setTextColor(120);
-      doc.text(
-        `Page ${currentPage} of ${pageCount}`,
-        doc.internal.pageSize.width - 20,
-        doc.internal.pageSize.height - 10
-      );
-    }
+    theme: "striped",
+    headStyles: { fillColor: [41, 112, 128], textColor: 255, fontStyle: "bold" },
+    styles: { fontSize: 9, cellPadding: 3 }
   });
 
-  // Save file
-  doc.save("College-Predictor by Shreyas Pawar.pdf");
+  doc.save("College_Predictor_Results.pdf");
 }
 
-
-
-// Live search filter on displayed results
+// Live search within displayed results
 function searchResults() {
-  const term = document.getElementById("searchResults").value.toLowerCase();
+  const term = document.getElementById("searchResults").value.toLowerCase().trim();
   if (!term) {
     filteredData = [...originalFilteredData];
   } else {
-    filteredData = originalFilteredData.filter((d) =>
-      (d["Institute"]?.toLowerCase().includes(term) ||
-      d["Branch"]?.toLowerCase().includes(term) ||
-      d["Seat Type"]?.toLowerCase().includes(term))
+    filteredData = originalFilteredData.filter(
+      (d) =>
+        (d["Institute"]?.toLowerCase().includes(term) ||
+          d["Branch"]?.toLowerCase().includes(term) ||
+          d["Seat Type"]?.toLowerCase().includes(term))
     );
   }
   currentPage = 1;
   displayResults();
 }
 
-// Reset filters & UI
+// Sort results based on dropdown selection
+function sortResults() {
+  const sortMode = document.getElementById("sortSelect").value;
+  if (!filteredData.length) return;
+  if (sortMode === "percentile-desc") {
+    filteredData.sort((a, b) => (b["Percentile"] || 0) - (a["Percentile"] || 0));
+  } else if (sortMode === "rank-asc") {
+    filteredData.sort((a, b) => (a["Rank"] || Infinity) - (b["Rank"] || Infinity));
+  }
+  currentPage = 1;
+  displayResults();
+}
+
+// Save current filter preferences to localStorage
+function savePreferences() {
+  const prefs = {
+    seat: seatChoices.getValue(true),
+    branch: branchChoices.getValue(true),
+    college: collegeChoices.getValue(true),
+    region: regionChoices.getValue(true)
+  };
+  localStorage.setItem("seatwise_prefs", JSON.stringify(prefs));
+}
+
+// Load preferences from localStorage
+function loadPreferences() {
+  const prefs = JSON.parse(localStorage.getItem("seatwise_prefs"));
+  if (!prefs) return;
+  try {
+    if (prefs.seat) seatChoices.setChoiceByValue(prefs.seat);
+    if (prefs.branch) branchChoices.setChoiceByValue(prefs.branch);
+    if (prefs.college) collegeChoices.setChoiceByValue(prefs.college);
+    if (prefs.region) regionChoices.setChoiceByValue(prefs.region);
+  } catch (e) {
+    console.warn("Could not restore all preferences", e);
+  }
+}
+
+// Reset all filters and return to form view
 function resetForm() {
   document.getElementById("predictorForm").reset();
-  document.querySelector(".container").style.display = "block";
-  document.getElementById("resultsContainer").style.display = "none";
+  document.getElementById("inputValue").value = "";
+  document.querySelector('input[value="percentile"]').checked = true;
+  const inputLabel = document.getElementById("inputLabel");
+  if (inputLabel) inputLabel.innerText = "Enter Percentile:";
+
   seatChoices.clearStore();
   branchChoices.clearStore();
   collegeChoices.clearStore();
   regionChoices.clearStore();
   populateDropdowns(excelData);
-  document.getElementById("searchResults").value = "";
+
+  const formCard = document.getElementById("formCard");
+  const resultsContainer = document.getElementById("resultsContainer");
+  if (formCard) formCard.style.display = "block";
+  if (resultsContainer) resultsContainer.style.display = "none";
+
+  const searchInput = document.getElementById("searchResults");
+  if (searchInput) searchInput.value = "";
+  originalFilteredData = [];
+  filteredData = [];
+  savePreferences();
 }
 
-// Initialization
+// Initialize the application – load data and set up event listeners
 async function initApp() {
+  // Wait for DOM to be fully loaded (safe)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+    return;
+  }
+
   initDropdowns();
   showLoading(true);
+
   try {
     const res = await fetch("Engineering-College-List.json");
+    if (!res.ok) throw new Error("Network response failed");
     const json = await res.json();
-    excelData = json["MHT-CET College Data"];
+    excelData = json["MHT-CET College Data"] || [];
+    if (!excelData.length) throw new Error("Empty dataset");
     populateDropdowns(excelData);
     showLoading(false);
 
-    document.getElementById("predictButton").addEventListener("click", () => {
-      filteredData = filterData();
-      if (filteredData && filteredData.length) {
-        originalFilteredData = [...filteredData];
-        document.querySelector(".container").style.display = "none";
-        document.getElementById("resultsContainer").style.display = "block";
-        displaySearchParams();
-        displayResults();
-      } else {
-        showNotification("No colleges found matching your criteria", "info");
-      }
-    });
+    loadPreferences();
 
-    document.getElementById("resetBtn").addEventListener("click", resetForm);
-    document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
-    document.getElementById("searchResults").addEventListener("input", searchResults);
-    document.getElementById("clearSearch").addEventListener("click", () => {
-      document.getElementById("searchResults").value = "";
-      searchResults();
-    });
-    
-    // Add rank/percentile toggle functionality
-    document.querySelectorAll('input[name="predictType"]').forEach(input => {
-      input.addEventListener("change", function() {
-        document.getElementById("inputLabel").textContent = 
-          this.value === "percentile" ? "Enter Percentile:" : "Enter Rank:";
+    // Attach event listeners – with existence checks
+    const predictBtn = document.getElementById("predictButton");
+    if (predictBtn) {
+      predictBtn.addEventListener("click", () => {
+        const filtered = filterData();
+        if (filtered && filtered.length) {
+          filteredData = filtered;
+          originalFilteredData = [...filteredData];
+          const formCard = document.getElementById("formCard");
+          const resultsContainer = document.getElementById("resultsContainer");
+          if (formCard) formCard.style.display = "none";
+          if (resultsContainer) resultsContainer.style.display = "block";
+          displaySearchParams();
+          displayResults();
+          savePreferences();
+        } else {
+          showNotification("No colleges found matching your criteria", "info");
+        }
+      });
+    }
+
+    const resetBtn = document.getElementById("resetBtn");
+    if (resetBtn) resetBtn.addEventListener("click", resetForm);
+
+    const downloadBtn = document.getElementById("downloadPdfBtn");
+    if (downloadBtn) downloadBtn.addEventListener("click", downloadPDF);
+
+    const clearSearchBtn = document.getElementById("clearSearch");
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener("click", () => {
+        const searchInput = document.getElementById("searchResults");
+        if (searchInput) searchInput.value = "";
+        searchResults();
+      });
+    }
+
+    const searchInput = document.getElementById("searchResults");
+    if (searchInput) searchInput.addEventListener("input", searchResults);
+
+    const sortSelect = document.getElementById("sortSelect");
+    if (sortSelect) sortSelect.addEventListener("change", sortResults);
+
+    const radioButtons = document.querySelectorAll('input[name="predictType"]');
+    radioButtons.forEach((input) => {
+      input.addEventListener("change", function () {
+        const label = document.getElementById("inputLabel");
+        if (label) {
+          label.innerText = this.value === "percentile" ? "Enter Percentile:" : "Enter Rank:";
+        }
       });
     });
   } catch (err) {
     console.error(err);
     showLoading(false);
-    showNotification("Failed to load college data. Please try again later.", "error");
+    showNotification("Failed to load college data. Please check the JSON file.", "error");
   }
 }
 
-// Kickoff
-document.addEventListener("DOMContentLoaded", initApp);
+// Start the app
+initApp();
